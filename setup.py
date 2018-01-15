@@ -59,11 +59,12 @@ class CMakeBuild(build_ext):
 setup(
     name='spanops',
     version='0.0.1',
-    author='Dean Moldovan',
-    author_email='dean0x7d@gmail.com',
-    description='A test project using pybind11 and CMake',
+    author='Jim Bosch',
+    author_email='talljimbo@gmail.com',
+    description='Operation on Spans',
     long_description='',
     ext_modules=[CMakeExtension('spanops')],
     cmdclass=dict(build_ext=CMakeBuild),
+    test_suite="tests",
     zip_safe=False,
 )

@@ -1,11 +1,7 @@
-# spanops for pybind11
-
-[![Build Status](https://travis-ci.org/pybind/spanops.svg?branch=master)](https://travis-ci.org/pybind/spanops)
-[![Build status](https://ci.appveyor.com/api/projects/status/57nnxfm4subeug43/branch/master?svg=true)](https://ci.appveyor.com/project/dean0x7d/cmake-example/branch/master)
+# spanops example for pybind11
 
 An example [pybind11](https://github.com/pybind/pybind11) module built with a
-CMake-based build system. This is useful for C++ codebases that have an existing
-CMake project structure.
+CMake-based build system, derived from pybind11's official [cmake_example](git@github.com:pybind/cmake_example.git) project.
 
 
 ## Prerequisites
