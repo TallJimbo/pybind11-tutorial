@@ -147,6 +147,7 @@ void declareSpanSet(py::module & mod) {
         )
         .def(py::self | py::self)
         .def(py::self |= py::self)
+        .def("split", &SpanSet::split)
     ;
     wrap_common(cls);
 }
