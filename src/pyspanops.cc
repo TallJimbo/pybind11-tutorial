@@ -8,6 +8,15 @@ using namespace pybind11::literals;
 namespace spanops {
 namespace {
 
+template <typename Class, typename ...Args>
+void wrap_common(py::class_<Class, Args...> & cls) {
+    cls.def("__and__", &Class::operator&, py::is_operator());
+    cls.def("__iand__", &Class::operator&, py::is_operator());
+    cls.def("__eq__", &Class::operator==, py::is_operator());
+    cls.def("__ne__", &Class::operator!=, py::is_operator());
+    cls.def_property_readonly("empty", &Class::empty);
+}
+
 void declareInterval(py::module & mod) {
     py::class_<Interval> cls(mod, "Interval");
     cls.def(py::init<>());
@@ -16,11 +25,6 @@ void declareInterval(py::module & mod) {
     cls.def_property_readonly("min", &Interval::min);
     cls.def_property_readonly("max", &Interval::max);
     cls.def_property_readonly("length", &Interval::length);
-    cls.def_property_readonly("empty", &Interval::empty);
-    cls.def("__and__", &Interval::operator&, py::is_operator());
-    cls.def("__iand__", &Interval::operator&=, py::is_operator());
-    cls.def("__eq__", &Interval::operator==, py::is_operator());
-    cls.def("__ne__", &Interval::operator!=, py::is_operator());
     cls.def("expand_to", (void (Interval::*)(int))&Interval::expand_to);
     cls.def("expanded_to", (Interval (Interval::*)(int) const)&Interval::expanded_to);
     cls.def("expand_to", (void (Interval::*)(Interval const &))&Interval::expand_to);
@@ -45,10 +49,12 @@ void declareInterval(py::module & mod) {
             return py::str("{}..{}").format(self.min(), self.max());
         }
     );
+    wrap_common(cls);
 }
 
 void declareSpan(py::module & mod) {
-    py::class_<Span>(mod, "Span")
+    py::class_<Span> cls(mod, "Span");
+    cls
         .def(py::init<>())
         .def(py::init<Interval, int>(), "x"_a, "y"_a)
         .def_property_readonly("x0", &Span::x0)
@@ -56,13 +62,8 @@ void declareSpan(py::module & mod) {
         .def_property_readonly("x", &Span::x)
         .def_property_readonly("y", &Span::y)
         .def_property_readonly("width", &Span::width)
-        .def_property_readonly("empty", &Span::empty)
-        .def("__and__", &Span::operator&, py::is_operator())
-        .def("__iand__", &Span::operator&, py::is_operator())
         .def("overlaps", (bool (Span::*)(int, int) const)&Span::overlaps, "x"_a, "y"_a)
         .def("overlaps", (bool (Span::*)(Span const &) const)&Span::overlaps)
-        .def("__eq__", &Span::operator==, py::is_operator())
-        .def("__ne__", &Span::operator!=, py::is_operator())
         .def(
             "__repr__",
             [](Span const & self) {
@@ -81,6 +82,7 @@ void declareSpan(py::module & mod) {
                 return py::str("(x={!s}, y={!s})").format(self.x(), self.y());
             }
         );
+    wrap_common(cls);
 }
 
 } // anonymous
