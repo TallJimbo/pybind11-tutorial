@@ -138,7 +138,13 @@ void declareSpanSet(py::module & mod) {
         .def(py::init<Box>())
         .def_property_readonly("area", &SpanSet::area)
         .def_property_readonly("bbox", &SpanSet::bbox)
-        .def_property_readonly("size", &SpanSet::size)
+        .def("__len__", &SpanSet::size)
+        .def(
+             "__iter__",
+             [](SpanSet const & self) {
+                return py::make_iterator(self.begin(), self.end());
+             }
+        )
         .def(py::self | py::self)
         .def(py::self |= py::self)
     ;
