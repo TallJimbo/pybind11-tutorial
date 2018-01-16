@@ -86,6 +86,51 @@ void declareSpan(py::module & mod) {
     wrap_common(cls);
 }
 
+void declareBox(py::module & mod) {
+    py::class_<Box> cls(mod, "Box");
+    cls
+        .def(py::init<>())
+        .def(py::init<Span>(), "span"_a)
+        .def(py::init<Interval, Interval>(), "x"_a, "y"_a)
+        .def_property_readonly("x", &Box::x)
+        .def_property_readonly("y", &Box::y)
+        .def_property_readonly("x0", &Box::x0)
+        .def_property_readonly("x1", &Box::x1)
+        .def_property_readonly("y0", &Box::y0)
+        .def_property_readonly("y1", &Box::y1)
+        .def_property_readonly("width", &Box::width)
+        .def_property_readonly("height", &Box::height)
+        .def_property_readonly("area", &Box::area)
+        .def("expand_to", (void (Box::*)(int, int))&Box::expand_to, "x"_a, "y"_a)
+        .def("expanded_to", (Box (Box::*)(int, int) const)&Box::expanded_to, "x"_a, "y"_a)
+        .def("expand_to", (void (Box::*)(Span const &))&Box::expand_to)
+        .def("expanded_to", (Box (Box::*)(Span const &) const)&Box::expanded_to)
+        .def("expand_to", (void (Box::*)(Box const &))&Box::expand_to)
+        .def("expanded_to", (Box (Box::*)(Box const &) const)&Box::expanded_to)
+        .def("overlaps", (bool (Box::*)(int, int) const)&Box::overlaps, "x"_a, "y"_a)
+        .def("overlaps", (bool (Box::*)(Span const &) const)&Box::overlaps)
+        .def("overlaps", (bool (Box::*)(Box const &) const)&Box::overlaps)
+        .def(
+            "__repr__",
+            [](Box const & self) {
+                if (self.empty()) {
+                    return py::str("Box()");
+                }
+                return py::str("Box(x={!r}, y={!r})").format(self.x(), self.y());
+            }
+        )
+        .def(
+            "__str__",
+            [](Box const & self) {
+                if (self.empty()) {
+                    return py::str("()");
+                }
+                return py::str("(x={!s}, y={!s})").format(self.x(), self.y());
+            }
+        );
+    wrap_common(cls);
+}
+
 } // anonymous
 } // spanops
 
@@ -93,6 +138,7 @@ void declareSpan(py::module & mod) {
 PYBIND11_MODULE(spanops, m) {
     spanops::declareInterval(m);
     spanops::declareSpan(m);
+    spanops::declareBox(m);
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;
 #else
