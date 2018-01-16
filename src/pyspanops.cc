@@ -131,6 +131,21 @@ void declareBox(py::module & mod) {
     wrap_common(cls);
 }
 
+void declareSpanSet(py::module & mod) {
+    py::class_<SpanSet> cls(mod, "SpanSet");
+    cls
+        .def(py::init<>())
+        .def(py::init<Box>())
+        .def_property_readonly("area", &SpanSet::area)
+        .def_property_readonly("bbox", &SpanSet::bbox)
+        .def_property_readonly("size", &SpanSet::size)
+        .def(py::self | py::self)
+        .def(py::self |= py::self)
+    ;
+    wrap_common(cls);
+}
+
+
 } // anonymous
 } // spanops
 
@@ -139,6 +154,7 @@ PYBIND11_MODULE(spanops, m) {
     spanops::declareInterval(m);
     spanops::declareSpan(m);
     spanops::declareBox(m);
+    spanops::declareSpanSet(m);
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;
 #else
