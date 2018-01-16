@@ -1,6 +1,7 @@
 #include "pybind11/pybind11.h"
 #include "pybind11/operators.h"
 #include "pybind11/stl.h"
+#include "pybind11/numpy.h"
 #include "spanops.h"
 
 namespace py = pybind11;
@@ -17,6 +18,44 @@ void wrap_common(py::class_<Class, Args...> & cls) {
     cls.def(py::self == py::self);
     cls.def(py::self != py::self);
     cls.def_property_readonly("empty", &Class::empty);
+}
+
+template <typename T>
+void wrap_image_ops(py::class_<SpanSet> & cls) {
+    cls.def(
+        "insert",
+        [](SpanSet & self, py::array_t<T, py::array::c_style> array, T value, int x0, int y0) {
+            if (array.ndim() != 2) {
+                PyErr_SetString(PyExc_TypeError, "Array must have exactly 2 dimensions");
+                throw py::error_already_set();
+            }
+            ImageWrapper<T> w = {
+                array.mutable_data(),
+                static_cast<std::ptrdiff_t>(array.strides(0)/sizeof(T)),
+                Box(Interval(x0, x0 + array.shape(1) - 1),
+                    Interval(y0, y0 + array.shape(0) - 1))
+            };
+            self.insert(w, value);
+        },
+        "array"_a, "value"_a, "x0"_a=0, "y0"_a=0
+    );
+    cls.def_static(
+        "extract",
+        [](py::array_t<T, py::array::c_style> array, T value, int x0, int y0) {
+            if (array.ndim() != 2) {
+                PyErr_SetString(PyExc_TypeError, "Array must have exactly 2 dimensions");
+                throw py::error_already_set();
+            }
+            ImageWrapper<T const> w = {
+                array.data(),
+                static_cast<std::ptrdiff_t>(array.strides(0)/sizeof(T)),
+                Box(Interval(x0, x0 + array.shape(1) - 1),
+                    Interval(y0, y0 + array.shape(0) - 1))
+            };
+            return SpanSet::extract(w, value);
+        },
+        "array"_a, "value"_a, "x0"_a=0, "y0"_a=0
+    );
 }
 
 void declareInterval(py::module & mod) {
@@ -151,6 +190,17 @@ void declareSpanSet(py::module & mod) {
         .def("split", &SpanSet::split)
     ;
     wrap_common(cls);
+    wrap_image_ops<bool>(cls);
+    wrap_image_ops<std::uint8_t>(cls);
+    wrap_image_ops<std::int8_t>(cls);
+    wrap_image_ops<std::uint16_t>(cls);
+    wrap_image_ops<std::int16_t>(cls);
+    wrap_image_ops<std::uint32_t>(cls);
+    wrap_image_ops<std::int32_t>(cls);
+    wrap_image_ops<std::uint64_t>(cls);
+    wrap_image_ops<std::int64_t>(cls);
+    wrap_image_ops<float>(cls);
+    wrap_image_ops<double>(cls);
 }
 
 
