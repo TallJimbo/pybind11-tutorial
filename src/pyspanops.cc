@@ -100,7 +100,7 @@ void declareSpan(py::module & mod) {
         .def(py::init<Interval, int>(), "x"_a, "y"_a)
         .def_property_readonly("x0", &Span::x0)
         .def_property_readonly("x1", &Span::x1)
-        .def_property_readonly("x", &Span::x)
+        .def_property_readonly("x", &Span::x, py::return_value_policy::copy)
         .def_property_readonly("y", &Span::y)
         .def_property_readonly("width", &Span::width)
         .def("overlaps", (bool (Span::*)(int, int) const)&Span::overlaps, "x"_a, "y"_a)
@@ -132,8 +132,8 @@ void declareBox(py::module & mod) {
         .def(py::init<>())
         .def(py::init<Span>(), "span"_a)
         .def(py::init<Interval, Interval>(), "x"_a, "y"_a)
-        .def_property_readonly("x", &Box::x)
-        .def_property_readonly("y", &Box::y)
+        .def_property_readonly("x", &Box::x, py::return_value_policy::copy)
+        .def_property_readonly("y", &Box::y, py::return_value_policy::copy)
         .def_property_readonly("x0", &Box::x0)
         .def_property_readonly("x1", &Box::x1)
         .def_property_readonly("y0", &Box::y0)
@@ -177,7 +177,7 @@ void declareSpanSet(py::module & mod) {
         .def(py::init<>())
         .def(py::init<Box>())
         .def_property_readonly("area", &SpanSet::area)
-        .def_property_readonly("bbox", &SpanSet::bbox)
+        .def_property_readonly("bbox", &SpanSet::bbox, py::return_value_policy::copy)
         .def("__len__", &SpanSet::size)
         .def(
              "__iter__",
