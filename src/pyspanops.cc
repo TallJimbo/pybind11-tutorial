@@ -13,10 +13,10 @@ void declareInterval(py::module & mod) {
     cls.def(py::init<>());
     cls.def(py::init<int>());
     cls.def(py::init<int, int>(), "min"_a, "max"_a);
-    cls.def("min", &Interval::min)
-    cls.def("max", &Interval::max)
-    cls.def("length", &Interval::length)
-    cls.def("empty", &Interval::empty)
+    cls.def_property_readonly("min", &Interval::min);
+    cls.def_property_readonly("max", &Interval::max);
+    cls.def_property_readonly("length", &Interval::length);
+    cls.def_property_readonly("empty", &Interval::empty);
 }
 
 } // anonymous
