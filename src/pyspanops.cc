@@ -66,9 +66,7 @@ void declareInterval(py::module & mod) {
     cls.def_property_readonly("min", &Interval::min);
     cls.def_property_readonly("max", &Interval::max);
     cls.def_property_readonly("length", &Interval::length);
-    cls.def("expand_to", (void (Interval::*)(int))&Interval::expand_to);
     cls.def("expanded_to", (Interval (Interval::*)(int) const)&Interval::expanded_to);
-    cls.def("expand_to", (void (Interval::*)(Interval const &))&Interval::expand_to);
     cls.def("expanded_to", (Interval (Interval::*)(Interval const &) const)&Interval::expanded_to);
     cls.def("overlaps", (bool (Interval::*)(int) const)&Interval::overlaps);
     cls.def("overlaps", (bool (Interval::*)(Interval const &) const)&Interval::overlaps);
@@ -141,11 +139,8 @@ void declareBox(py::module & mod) {
         .def_property_readonly("width", &Box::width)
         .def_property_readonly("height", &Box::height)
         .def_property_readonly("area", &Box::area)
-        .def("expand_to", (void (Box::*)(int, int))&Box::expand_to, "x"_a, "y"_a)
         .def("expanded_to", (Box (Box::*)(int, int) const)&Box::expanded_to, "x"_a, "y"_a)
-        .def("expand_to", (void (Box::*)(Span const &))&Box::expand_to)
         .def("expanded_to", (Box (Box::*)(Span const &) const)&Box::expanded_to)
-        .def("expand_to", (void (Box::*)(Box const &))&Box::expand_to)
         .def("expanded_to", (Box (Box::*)(Box const &) const)&Box::expanded_to)
         .def("overlaps", (bool (Box::*)(int, int) const)&Box::overlaps, "x"_a, "y"_a)
         .def("overlaps", (bool (Box::*)(Span const &) const)&Box::overlaps)

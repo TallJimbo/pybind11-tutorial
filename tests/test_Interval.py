@@ -41,10 +41,7 @@ class IntervalTestCase(unittest.TestCase):
         self.assertTrue(a.empty)
 
     def test_expand(self):
-        a = Interval(1, 4)
-        a.expand_to(-1)
-        self.assertEqual(a, Interval(-1, 4))
-        a.expand_to(Interval(3, 7))
+        a = Interval(-1, 7)
         self.assertEqual(a, Interval(-1, 7))
         c = a.expanded_to(9)
         self.assertEqual(c, Interval(-1, 9))

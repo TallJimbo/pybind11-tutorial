@@ -51,10 +51,6 @@ class BoxTestCase(unittest.TestCase):
         self.assertTrue(Box(c, c).overlaps(Box(a, a)))
 
     def test_expand_and_overlaps(self):
-        def check_in_place(box, *args):
-            copy = Box(box.x, box.y)
-            copy.expand_to(*args)
-            self.assertEqual(box.expanded_to(*args), copy)
         a = Interval(1, 4)
         b = Interval(3, 6)
         c = Interval(3, 4)
@@ -63,31 +59,19 @@ class BoxTestCase(unittest.TestCase):
         box1 = Box(x=c, y=c)
         # x, y overload
         self.assertEqual(box1.expanded_to(x=1, y=3), Box(x=a, y=c))
-        check_in_place(box1, 1, 3)
         self.assertEqual(box1.expanded_to(x=3, y=1), Box(x=c, y=a))
-        check_in_place(box1, 3, 1)
         self.assertEqual(box1.expanded_to(x=6, y=3), Box(x=b, y=c))
-        check_in_place(box1, 6, 3)
         self.assertEqual(box1.expanded_to(x=3, y=6), Box(x=c, y=b))
-        check_in_place(box1, 3, 6)
         # Span overload
         self.assertEqual(box1.expanded_to(Span(x=d, y=3)), Box(x=a, y=c))
-        check_in_place(box1, Span(x=d, y=3))
         self.assertEqual(box1.expanded_to(Span(x=c, y=1)), Box(x=c, y=a))
-        check_in_place(box1, Span(x=c, y=1))
         self.assertEqual(box1.expanded_to(Span(x=e, y=3)), Box(x=b, y=c))
-        check_in_place(box1, Span(x=e, y=3))
         self.assertEqual(box1.expanded_to(Span(x=c, y=6)), Box(x=c, y=b))
-        check_in_place(box1, Span(x=c, y=6))
         # Box overload
         self.assertEqual(box1.expanded_to(Box(x=d, y=c)), Box(x=a, y=c))
-        check_in_place(box1, Box(x=d, y=c))
         self.assertEqual(box1.expanded_to(Box(x=c, y=d)), Box(x=c, y=a))
-        check_in_place(box1, Box(x=c, y=e))
         self.assertEqual(box1.expanded_to(Box(x=e, y=c)), Box(x=b, y=c))
-        check_in_place(box1, Box(x=e, y=c))
         self.assertEqual(box1.expanded_to(Box(x=c, y=e)), Box(x=c, y=b))
-        check_in_place(box1, Box(x=c, y=d))
 
 
 if __name__ == "__main__":
