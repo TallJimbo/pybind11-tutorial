@@ -27,6 +27,24 @@ void declareInterval(py::module & mod) {
     cls.def("expanded_to", (Interval (Interval::*)(Interval const &) const)&Interval::expanded_to);
     cls.def("overlaps", (bool (Interval::*)(int) const)&Interval::overlaps);
     cls.def("overlaps", (bool (Interval::*)(Interval const &) const)&Interval::overlaps);
+    cls.def(
+        "__repr__",
+        [](Interval const & self) {
+            if (self.empty()) {
+                return py::str("Interval()");
+            }
+            return py::str("Interval(min={}, max={})").format(self.min(), self.max());
+        }
+    );
+    cls.def(
+        "__str__",
+        [](Interval const & self) {
+            if (self.empty()) {
+                return py::str("()");
+            }
+            return py::str("{}..{}").format(self.min(), self.max());
+        }
+    );
 }
 
 } // anonymous
