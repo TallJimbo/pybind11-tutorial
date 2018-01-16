@@ -47,12 +47,49 @@ void declareInterval(py::module & mod) {
     );
 }
 
+void declareSpan(py::module & mod) {
+    py::class_<Span>(mod, "Span")
+        .def(py::init<>())
+        .def(py::init<Interval, int>(), "x"_a, "y"_a)
+        .def_property_readonly("x0", &Span::x0)
+        .def_property_readonly("x1", &Span::x1)
+        .def_property_readonly("x", &Span::x)
+        .def_property_readonly("y", &Span::y)
+        .def_property_readonly("width", &Span::width)
+        .def_property_readonly("empty", &Span::empty)
+        .def("__and__", &Span::operator&, py::is_operator())
+        .def("__iand__", &Span::operator&, py::is_operator())
+        .def("overlaps", (bool (Span::*)(int, int) const)&Span::overlaps, "x"_a, "y"_a)
+        .def("overlaps", (bool (Span::*)(Span const &) const)&Span::overlaps)
+        .def("__eq__", &Span::operator==, py::is_operator())
+        .def("__ne__", &Span::operator!=, py::is_operator())
+        .def(
+            "__repr__",
+            [](Span const & self) {
+                if (self.empty()) {
+                    return py::str("Span()");
+                }
+                return py::str("Span(x={!r}, y={!r})").format(self.x(), self.y());
+            }
+        )
+        .def(
+            "__str__",
+            [](Span const & self) {
+                if (self.empty()) {
+                    return py::str("()");
+                }
+                return py::str("(x={!s}, y={!s})").format(self.x(), self.y());
+            }
+        );
+}
+
 } // anonymous
 } // spanops
 
 
 PYBIND11_MODULE(spanops, m) {
     spanops::declareInterval(m);
+    spanops::declareSpan(m);
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;
 #else
