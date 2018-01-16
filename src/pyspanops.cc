@@ -10,6 +10,13 @@ namespace {
 
 void declareInterval(py::module & mod) {
     py::class_<Interval> cls(mod, "Interval");
+    cls.def(py::init<>());
+    cls.def(py::init<int>());
+    cls.def(py::init<int, int>(), "min"_a, "max"_a);
+    cls.def("min", &Interval::min)
+    cls.def("max", &Interval::max)
+    cls.def("length", &Interval::length)
+    cls.def("empty", &Interval::empty)
 }
 
 } // anonymous
