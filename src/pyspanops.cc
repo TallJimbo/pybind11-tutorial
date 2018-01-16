@@ -21,6 +21,9 @@ void declareInterval(py::module & mod) {
     cls.def("__iand__", &Interval::operator&=, py::is_operator());
     cls.def("__eq__", &Interval::operator==, py::is_operator());
     cls.def("__ne__", &Interval::operator!=, py::is_operator());
+    cls.def("expand_to", &Interval::expand_to);
+    cls.def("expanded_to", &Interval::expanded_to);
+    cls.def("overlaps", &Interval::overlaps);
 }
 
 } // anonymous
