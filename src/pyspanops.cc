@@ -1,4 +1,5 @@
 #include "pybind11/pybind11.h"
+#include "pybind11/operators.h"
 #include "spanops.h"
 
 namespace py = pybind11;
@@ -10,10 +11,10 @@ namespace {
 
 template <typename Class, typename ...Args>
 void wrap_common(py::class_<Class, Args...> & cls) {
-    cls.def("__and__", &Class::operator&, py::is_operator());
-    cls.def("__iand__", &Class::operator&, py::is_operator());
-    cls.def("__eq__", &Class::operator==, py::is_operator());
-    cls.def("__ne__", &Class::operator!=, py::is_operator());
+    cls.def(py::self & py::self);
+    cls.def(py::self &= py::self);
+    cls.def(py::self == py::self);
+    cls.def(py::self != py::self);
     cls.def_property_readonly("empty", &Class::empty);
 }
 
