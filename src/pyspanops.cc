@@ -17,6 +17,10 @@ void declareInterval(py::module & mod) {
     cls.def_property_readonly("max", &Interval::max);
     cls.def_property_readonly("length", &Interval::length);
     cls.def_property_readonly("empty", &Interval::empty);
+    cls.def("__and__", &Interval::operator&, py::is_operator());
+    cls.def("__iand__", &Interval::operator&=, py::is_operator());
+    cls.def("__eq__", &Interval::operator==, py::is_operator());
+    cls.def("__ne__", &Interval::operator!=, py::is_operator());
 }
 
 } // anonymous
